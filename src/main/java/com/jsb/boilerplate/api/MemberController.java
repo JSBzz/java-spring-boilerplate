@@ -2,10 +2,12 @@ package com.jsb.boilerplate.api;
 
 import com.jsb.boilerplate.dto.MemberRequest;
 import com.jsb.boilerplate.service.MemberService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Member API", description = "Member API")
+@Tag(name = "Member API", description = "Member management API")
 @RestController
 @RequestMapping("/api/members")
 public class MemberController {
@@ -16,8 +18,9 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+    @Operation(summary = "계정 생성", description = "유저 계정 생성")
     @PostMapping("/join")
-    public void join(@RequestBody MemberRequest dto) {
+    public void join(@Valid @RequestBody MemberRequest dto) {
         memberService.join(dto);
     }
 
