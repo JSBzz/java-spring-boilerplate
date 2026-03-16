@@ -2,6 +2,7 @@ package com.jsb.boilerplate.service;
 
 import com.jsb.boilerplate.dto.MemberRequest;
 import com.jsb.boilerplate.global.error.CustomException;
+import com.jsb.boilerplate.global.error.ErrorCode;
 import com.jsb.boilerplate.mapper.MemberMapper;
 import com.jsb.boilerplate.model.Member;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class MemberService {
     @Transactional
     public void join(MemberRequest request) {
         memberMapper.findByLoginId(request.getLoginId())
-                .ifPresent(m -> { throw new CustomException("이미 존재하는 아이디입니다.", HttpStatus.CONFLICT.value(), "USER_DUPLICATE"); });
+                .ifPresent(m -> { throw new CustomException(ErrorCode.LOGIN_ID_DUPLICATION); });
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         Member newMember = request.toEntity(encodedPassword);
 

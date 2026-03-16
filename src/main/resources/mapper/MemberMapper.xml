@@ -8,21 +8,23 @@
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO member (
-        login_id,
-        password,
-        name,
-        email,
-        role,
-        status,
-        created_at
+            login_id,
+            password,
+            name,
+            email,
+            role,
+            status,
+            created_at,
+            updated_at
         ) VALUES (
-        #{loginId},
-        #{password},
-        #{name},
-        #{email},
-        #{role},
-        #{status},
-        #{createdAt}
+            #{loginId},
+            #{password},
+            #{name},
+            #{email},
+            #{role},
+            #{status},
+            #{createdAt},
+            #{updatedAt}
         )
     </insert>
 

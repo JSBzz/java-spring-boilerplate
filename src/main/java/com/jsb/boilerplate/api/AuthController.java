@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jsb.boilerplate.global.error.ErrorCode;
+
 @Tag(name = "Auth API", description = "Authentication API for login and token management")
 @RestController
 @RequestMapping("/api")
@@ -34,10 +36,10 @@ public class AuthController {
         String password = request.getPassword();
 
         Member member = memberMapper.findByLoginId(loginId)
-                .orElseThrow(() -> new CustomException("가입되지 않은 아이디입니다.", HttpStatus.UNAUTHORIZED.value(), "AUTH_001"));
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CREDENTIALS));
 
         if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new CustomException("비밀번호가 일치하지 않습니다.",  HttpStatus.UNAUTHORIZED.value(), "AUTH_002");
+            throw new CustomException(ErrorCode.INVALID_CREDENTIALS);
         }
 
         String token = jwtUtil.createToken(member.getLoginId());

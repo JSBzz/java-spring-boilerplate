@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
 
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import java.util.stream.Collectors;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -16,14 +21,39 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     protected ProblemDetail handleBusinessException(CustomException e) {
         log.error("Business Error: {}", e.getMessage());
+        ErrorCode errorCode = e.getErrorCode();
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                HttpStatus.valueOf(e.getStatus()),
+                errorCode.getStatus(),
                 e.getMessage()
         );
 
         problemDetail.setTitle("Business Rule Violation");
-        problemDetail.setProperty("error_code", e.getCode());
+        problemDetail.setProperty("error_code", errorCode.getCode());
+        problemDetail.setProperty("timestamp", Instant.now());
+
+        return problemDetail;
+    }
+
+    /**
+     * @Valid 유효성 검사 실패 시 발생
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        log.error("Validation Error: {}", e.getMessage());
+        BindingResult bindingResult = e.getBindingResult();
+        
+        String detail = bindingResult.getFieldErrors().stream()
+                .map(error -> String.format("[%s] %s", error.getField(), error.getDefaultMessage()))
+                .collect(Collectors.joining(", "));
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                detail
+        );
+
+        problemDetail.setTitle("Validation Failed");
+        problemDetail.setProperty("error_code", ErrorCode.INVALID_INPUT_VALUE.getCode());
         problemDetail.setProperty("timestamp", Instant.now());
 
         return problemDetail;
@@ -35,7 +65,7 @@ public class GlobalExceptionHandler {
 
         return ProblemDetail.forStatusAndDetail(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "서버 내부 오류가 발생했습니다."
+                ErrorCode.INTERNAL_SERVER_ERROR.getMessage()
         );
     }
 }

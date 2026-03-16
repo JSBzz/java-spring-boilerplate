@@ -5,10 +5,11 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Member {
+public class Member extends BaseEntity {
     private Long id;
     private String loginId;
     private String password;
@@ -16,5 +17,4 @@ public class Member {
     private String email;
     private String role;
     private String status;
-    private LocalDateTime createdAt;
 }

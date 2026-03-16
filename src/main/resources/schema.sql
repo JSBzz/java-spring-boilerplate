@@ -11,5 +11,6 @@ CREATE TABLE member (
     role VARCHAR(20) DEFAULT 'USER',           -- 권한 (USER, ADMIN)
     status VARCHAR(20) DEFAULT 'ACTIVE',       -- 상태 (ACTIVE, LOCKED, WITHDRAWAL)
     last_login_at TIMESTAMP,                   -- 최종 로그인 일시
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
