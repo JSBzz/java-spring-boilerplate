@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Member API", description = "Member management API")
+@Tag(name = "Member API", description = "유저 관리 API")
 @RestController
 @RequestMapping("/api/members")
 public class MemberController {

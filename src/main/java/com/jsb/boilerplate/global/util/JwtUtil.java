@@ -14,19 +14,31 @@ import java.util.Date;
 public class JwtUtil {
 
     private final SecretKey key;
-    private final long expirationTime;
+    private final long accessTokenExpirationTime;
+    private final long refreshTokenExpirationTime;
 
     public JwtUtil(
             @Value("${jwt.secret}") String secretKey,
-            @Value("${jwt.expiration_time}") long expirationTime) {
+            @Value("${jwt.expiration_time}") long accessTokenExpirationTime,
+            @Value("${jwt.refresh_token_expiration_time}") long refreshTokenExpirationTime) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
-        this.expirationTime = expirationTime;
+        this.accessTokenExpirationTime = accessTokenExpirationTime;
+        this.refreshTokenExpirationTime = refreshTokenExpirationTime;
     }
 
-    public String createToken(String loginId) {
+    public String createAccessToken(String loginId) {
+        return createToken(loginId, "ACCESS", accessTokenExpirationTime);
+    }
+
+    public String createRefreshToken(String loginId) {
+        return createToken(loginId, "REFRESH", refreshTokenExpirationTime);
+    }
+
+    private String createToken(String loginId, String type, long expirationTime) {
         return Jwts.builder()
                 .subject(loginId)
+                .claim("type", type)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(key)
@@ -37,6 +49,10 @@ public class JwtUtil {
         return getClaims(token).getSubject();
     }
 
+    public String getTokenType(String token) {
+        return getClaims(token).get("type", String.class);
+    }
+
     public boolean validateToken(String token) {
         try {
             getClaims(token);
@@ -44,6 +60,14 @@ public class JwtUtil {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public boolean validateAccessToken(String token) {
+        return validateToken(token) && "ACCESS".equals(getTokenType(token));
+    }
+
+    public boolean validateRefreshToken(String token) {
+        return validateToken(token) && "REFRESH".equals(getTokenType(token));
     }
 
     private Claims getClaims(String token) {

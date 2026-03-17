@@ -3,7 +3,31 @@
 
 <mapper namespace="com.jsb.boilerplate.mapper.MemberMapper">
     <select id="findByLoginId" resultType="com.jsb.boilerplate.model.Member">
-        SELECT * FROM member WHERE login_id = #{loginId}
+        SELECT
+            login_id,
+            password,
+            name,
+            email,
+            role,
+            status,
+            refresh_token,
+            created_at,
+            updated_at
+        FROM member WHERE login_id = #{loginId}
+    </select>
+
+    <select id="findByRefreshToken" resultType="com.jsb.boilerplate.model.Member">
+        SELECT
+            login_id,
+            password,
+            name,
+            email,
+            role,
+            status,
+            refresh_token,
+            created_at,
+            updated_at
+        FROM member WHERE refresh_token = #{refreshToken}
     </select>
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
@@ -14,6 +38,7 @@
             email,
             role,
             status,
+            refresh_token,
             created_at,
             updated_at
         ) VALUES (
@@ -23,9 +48,17 @@
             #{email},
             #{role},
             #{status},
+            #{refreshToken},
             #{createdAt},
             #{updatedAt}
         )
     </insert>
+
+    <update id="updateRefreshToken">
+        UPDATE member
+        SET refresh_token = #{refreshToken},
+            updated_at = NOW()
+        WHERE login_id = #{loginId}
+    </update>
 
 </mapper>

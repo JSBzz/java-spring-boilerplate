@@ -16,7 +16,11 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "M001", " 존재하지 않는 회원입니다."),
     LOGIN_ID_DUPLICATION(HttpStatus.CONFLICT, "M002", " 이미 존재하는 아이디입니다."),
     INVALID_LOGIN_ID(HttpStatus.BAD_REQUEST, "M003", " 아이디 또는 비밀번호가 올바르지 않습니다."),
-    INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "A001", " 아이디 또는 비밀번호가 올바르지 않습니다.");
+    INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "A001", " 아이디 또는 비밀번호가 올바르지 않습니다."),
+
+    // Auth
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A002", " 유효하지 않은 토큰입니다."),
+    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "A003", " 토큰이 만료되었습니다.");
 
     private final HttpStatus status;
     private final String code;

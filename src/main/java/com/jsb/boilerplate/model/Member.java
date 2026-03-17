@@ -17,4 +17,6 @@ public class Member extends BaseEntity {
     private String email;
     private String role;
     private String status;
+    private String refreshToken;
+    private LocalDateTime lastLoginAt;
 }

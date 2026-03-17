@@ -9,5 +9,6 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginResponseDto {
-    private String token;
+    private String accessToken;
+    private String refreshToken;
 }
